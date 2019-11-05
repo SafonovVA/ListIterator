@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/ListIterator.dir/main.cpp.o CMakeFiles/ListIterator.dir/s_list.cpp.o CMakeFiles/ListIterator.dir/s_iterator.cpp.o  -o ListIterator 

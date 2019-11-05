@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/vladimir/CLionProjects/ListIterator/main.cpp
+iostream
+-
+s_list.h
+/home/vladimir/CLionProjects/ListIterator/s_list.h
+
+/home/vladimir/CLionProjects/ListIterator/s_iterator.h
+
+/home/vladimir/CLionProjects/ListIterator/s_list.cpp
+s_list.h
+/home/vladimir/CLionProjects/ListIterator/s_list.h
+
+/home/vladimir/CLionProjects/ListIterator/s_list.h
+ctime
+-
+iostream
+-
+s_iterator.h
+/home/vladimir/CLionProjects/ListIterator/s_iterator.h
+
