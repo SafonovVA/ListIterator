@@ -1,14 +1,30 @@
-//
-// Created by vladimir on 05.11.2019.
-//
-
-#ifndef LISTITERATOR_S_LIST_H
-#define LISTITERATOR_S_LIST_H
-
 #include <ctime>
 #include <iostream>
-#include "s_iterator.h"
 using namespace std;
+
+template<class T>
+struct node
+{
+    T data;			// Данные
+    node<T>* next;	// Адрес следующего элемента списка
+    node() : next(nullptr) {}
+};
+
+template<class T>
+class s_iterator
+{
+private:
+    node<T>* ptr;
+public:
+    s_iterator() : ptr(nullptr) {}
+    explicit s_iterator(node<T>* ptr) : ptr(ptr) {}
+    s_iterator& operator++() { ptr = ptr->next; return *this; }
+    T& operator*() const { return ptr->data; }
+    node<T>* operator->() { return ptr; }
+    bool operator!=(const s_iterator& obj) const { return ptr != obj.ptr; }
+    node<T>* GetPtr() { return ptr; }
+    ~s_iterator() { ptr = nullptr; }
+};
 
 
 template<class T>
@@ -98,20 +114,6 @@ public:
     void add_to_head(const T& data)				// добавление элемента в начало
     {
         auto *value = new node<T>;
-        value->data = data;
-        if (!first) {
-            value->next = nullptr;
-            last = value;
-        }
-        else {
-            value->next = first;
-        }
-        first = value;
-    }
-
-    void add_to_tail(const T& data)				// добавление элемента в конец
-    {
-        auto *value = new node<T>;
         if (!first) {
             value->data = data;
             value->next = nullptr;
@@ -119,6 +121,23 @@ public:
             last = value;
         }
         else {
+            value->data = data;
+            value->next = first;
+            first = value;
+        }
+    }
+
+    void add_to_tail(const T& data)				// добавление элемента в конец
+    {
+        if (!first) {
+            auto *value = new node<T>;
+            value->data = data;
+            value->next = nullptr;
+            first = value;
+            last = value;
+        }
+        else {
+            auto *value = new node<T>;
             value->data = data;
             value->next = nullptr;
             last->next = value;
@@ -140,10 +159,9 @@ public:
 
     T delete_from_head()                            // удаление первого элемента
     {
-        T val = NULL;
         if (!first)
-            return val;
-        val = first->data;
+            return NULL;
+        T val = first->data;
         auto *p = first;
         first = first->next;
         delete p;
@@ -162,16 +180,6 @@ public:
                 return val;
             }
             else {
-                node<T> *value = first;
-                /*while (value) {
-                    if (!value->next->next) {
-                        T val = value->next->data;
-                        last = value;
-                        last->next = nullptr;
-                        delete value->next;
-                        return val;
-                    }
-                }*/
                 for (s_iterator<T> iter = begin(); iter != end(); ++iter){
                     if (iter->next->next == nullptr) {
                         T val = iter->next->data;
@@ -323,14 +331,25 @@ public:
             typeid(T) == typeid(short int) ||
             typeid(T) == typeid(long long)) {
             if (first) {
-                last = first;
-                for (node<T> *p = first; p; ) {
-                    node<T> *p2 = p;
-                    p = p->next;
-                    p2->next = first;
-                    first = p2;
+                size_t count = size();
+                T *arr = new T[count];
+                int k = 0;
+                for (s_iterator<T> iter = begin(); iter != end(); ++iter) {
+                    arr[k] = *iter;
+                    k++;
                 }
-                last->next = nullptr;
+                delete_all();
+                T x;
+                for (size_t i = 0; i < count - i - 1; i++) {
+                    x = arr[i];
+                    arr[i] = arr[count - i - 1];
+                    arr[count - i - 1] = x;
+                }
+                for (size_t i = 0; i < count; ++i) {
+                    add_to_tail(arr[i]);
+                }
+                delete[] arr;
+                arr = nullptr;
             }
         }
     }
@@ -399,4 +418,73 @@ public:
 };
 
 
-#endif //LISTITERATOR_S_LIST_H
+int main() {
+    srand(time(0));
+
+    s_list<int> first;
+    int size = 2;
+    for (int i = 0; i < size; i++)
+        first.add_to_head(rand() % 100);
+    first.show();
+
+    first.delete_from_head();
+    first.delete_from_tail();
+    first.show();
+
+    s_list<int> second;
+    size = rand() % 20;
+    for (int i = 0; i < size; i++)
+    	second.add_to_head(rand() % 10);
+    second.show();
+
+    second.add_to_tail(rand() % 10);
+    second.show();
+
+    s_list<int> third;
+    //s_list<int> third(second);
+    third.show();
+
+    s_list<int> fourth;
+    fourth = first;
+    fourth.show();
+
+    first.sort();
+    first.show();
+
+    first.reverse();
+    first.show();
+
+    size = fourth.size();
+    for (int i = 0; i < size; i++) {
+    	int value = fourth[i];
+    	cout << value << " ";
+    }
+    cout << endl;
+
+    first.delete_at(3);
+    first.show();
+
+    first.insert_at(4, 4);
+    first.show();
+
+    first.delete_all();
+    first.show();
+
+    first.splice(third);
+    first.show();
+    first.splice(fourth);
+    first.show();
+
+    size_t result = first.find(10);
+    if (result != 0)
+    	cout << "The number ten is in position: " << result << endl;
+    else
+    	cout << "Numbers ten not found" << endl;
+
+    first.find_and_replace(10, 1000);
+
+    for (auto it = first.begin(); it != first.end(); ++it)
+    	cout << *it << " ";
+
+    return 0;
+}

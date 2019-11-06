@@ -7,21 +7,23 @@ using namespace std;
 int main() {
     srand(time(0));
 
+    s_list<int> second;
+    int size = rand() % 20;
+    for (size_t i = 0; i < size; i++)
+        second.add_to_head(rand() % 10);
+    second.show();
+
     s_list<int> first;
-    int size = 2;
-    for (int i = 0; i < size; i++)
-        first.add_to_head(rand() % 100);
+    size = rand() % 20;
+    for (size_t i = 0; i < size; i++)
+        first.add_to_head(rand() % 10);
     first.show();
 
     first.delete_from_head();
     first.delete_from_tail();
     first.show();
 
-    s_list<int> second;
-    size = rand() % 20;
-    for (int i = 0; i < size; i++)
-    	second.add_to_head(rand() % 10);
-    second.show();
+
 
     second.add_to_tail(rand() % 10);
     second.show();
@@ -38,6 +40,7 @@ int main() {
     first.show();
 
     first.reverse();
+    cout << "----------------\n";
     first.show();
 
     size = fourth.size();
